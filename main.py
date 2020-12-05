@@ -1,7 +1,18 @@
-
+from apkanalyzer import *
+from traceflow import *
 
 
 
 
 if __name__ == '__main__':    # 프로그램의 시작점일 때만 아래 코드 실행
-    # 경로나 뭐 연결 시키는 부분들을 이어주는 부분
+    sess = misc.get_default_session()
+    pingju=Apkanlyzer("./DeviceNode.apk")
+
+    pingju.loadAPK(False)
+
+    pingju.getMainActivity()
+
+    pingju.getManifest()
+    tf = TraceFlow()
+    tf.getLogger()
+    tf.traceMethod(pingju.dx,"L"+pingju.getMainActivity(),None) 

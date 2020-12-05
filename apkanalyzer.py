@@ -1,5 +1,6 @@
 from androguard import misc
 from androguard.core.bytecodes.apk import APK
+from androguard import session
 import logging
 
 class Apkanlyzer:
@@ -22,8 +23,16 @@ class Apkanlyzer:
     def __init__(self, apk_path):                #경로 초기화
         self.apk_path = apk_path
 
-    def loadAPK(self):                 #apk 파일 분석 초기화
-        a, d, dx= misc.AnalyzeAPK(self.apk_path)
+    def loadAPK(self, flag):                 #apk 파일 분석 초기화
+        sess = misc.get_default_session()
+        if flag == True:
+            sess = session.Load("androguard_session.ag")
+            a, d, dx= misc.AnalyzeAPK(self.apk_path, session=sess)
+            self.a=a
+            self.d=d
+            self.dx=dx
+            return
+        a, d, dx= misc.AnalyzeAPK(self.apk_path, session=sess)
         self.a=a
         self.d=d
         self.dx=dx
@@ -37,28 +46,22 @@ class Apkanlyzer:
         manifest["permission"]=self.permission  # permissions
         #self.logger.logging("get permissions")
         
-        receive_mani=[]
         self.receiv_list = self.a.get_receivers()    
         for receiver in self.receiv_list:
             receiver_intent = self.a.get_intent_filters("receiver", receiver)
-            receive_mani.append({receiver:receiver_intent})
-        manifest["receiver"]=receive_mani
+            manifest["receiver"]={receiver:receiver_intent}
         #self.logger.logging("get receiver")
         
-        service_mani=[]
         self.serv_list = self.a.get_services()
         for service in self.serv_list:      # service, intent-filter
             service_intent = self.a.get_intent_filters("service", service)
-            service_mani.append({service:service_intent})
-        manifest["service"]=service_mani
+            manifest["service"]={service:service_intent}
         #self.logger.logging("get service")
         
-        active_mani=[]
         self.activ_list = self.a.get_activities()
         for activity in self.activ_list:          # activity, intent-filter
             activity_intent = self.a.get_intent_filters("activity", activity)
-            active_mani.append({activity:activity_intent})
-        manifest["activity"]=active_mani
+            manifest["activity"]={activity:activity_intent}
         #self.logger.logging("get activity")
         
         self.asign = self.a.get_signatures()
@@ -68,36 +71,12 @@ class Apkanlyzer:
         
         return manifest
 
-    def getMainActivity(self, activ_list):
-        for activity in activ_list:
+    def getMainActivity(self):
+        self.activ_list = self.a.get_activities()
+        for activity in self.activ_list:
             if(len(self.a.get_intent_filters("activity", activity)) > 0):
                 intent_filter = self.a.get_intent_filters("activity", activity)
                 if "android.intent.action.MAIN" in intent_filter["action"]:
                     mainActivity = activity
                     break
         return mainActivity
-
-pingju=Apkanlyzer("./Downloads/DeviceNode.apk")    
-
-pingju.loadAPK()
-pingju.getMainActivity()
-pingju.getManifest()
-
-
-        #apk 파일 경로그런거
-        #a d dx 분석파일 저장하는거 선언
-
-    #위에 a d dx 를 초기화 해줌 ㅇㅇ
-    #fi = a.get_android_manifest_axml().get_xml() 
-    #manifest 파싱 --> 엑티비티나 서비스 그런거 가져와!!
-
-"""
-
-# find MainActivity
-for activity in activity_list:
-    if(len(a.get_intent_filters("activity", activity)) > 0):
-        intent_filter = a.get_intent_filters("activity", activity)
-        if "android.intent.action.MAIN" in intent_filter["action"]:
-            mainActivity = activity
-            break
-"""
