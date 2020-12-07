@@ -24,7 +24,6 @@ class TableMaker:
         self.mainActivity=apkanalyzer.getMainActivity()
         self.flow_tbl={}
         self.get_mainactivity_method()
-
     # get_xref_to 한 결과를 '클래스네임::메소드네임' 형식으로 flow_tbl의 key와 value에 저장
     # <init>이 아니면 add_flow 
     def add_flow(self, key_class, key_method):

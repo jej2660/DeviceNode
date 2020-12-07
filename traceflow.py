@@ -21,7 +21,7 @@ from collections import OrderedDict
 
 class TraceFlow:
     def __init__(self):
-        self.find_list = ["startActivity", "startService"]
+        self.find_list = ["startActivity","startService"]
         self.Log_list = []
 
     def getLogger(self):
@@ -48,11 +48,13 @@ class TraceFlow:
         #if(method.name == "isPrimaryNavigation" or method.name == "getFragmentFactory" or method.name == "setFragmentFactory"):
         #    return
         for meth in method.get_xref_to():
+
             if(meth[1].name in self.find_list):
-                self.logger.critical("---Find!---"+ toString(path))
+                self.logger.critical("---Find!---")
                 connect_activity = self.methodAnalysis(method)
                 if connect_activity == None:
                     return
+                path.append(str(meth[0].name)+"::"+str(meth[1].name))
                 self.Log_list.append(path)
                 self.logger.critical("\n\n------New Activity Found!-----\n\n"+connect_activity)
                 for cls in self.dx.find_classes(connect_activity):
@@ -61,13 +63,13 @@ class TraceFlow:
                         self.logger.critical(str(methd.name))
                         tmp_path = [str(cls.name) + "::" + str(methd.name)]
                         self.search(tmp_path, methd, 0)
+                continue
             if method.name == meth[1].name:
                 self.logger.critical("Loop!")
                 continue
             tmp_path = path
             tmp_path.append(str(meth[0].name) + "::" + str(meth[1].name))
             self.logger.critical("["+str(dept)+"]"+"INSIDE: " + str(meth[0].name) + "::" + str(meth[1].name))
-            self.logger.info("Current path: " + str(meth[0].name) + "::" + str(meth[1].name))
             self.logger.info("Full path" + toString(tmp_path))
             self.search(tmp_path, meth[1], dept+1)
 
@@ -82,7 +84,6 @@ class TraceFlow:
                     self.logger.info(meth.name)
                     tmp_path = [str(cls.name) + "::" + str(meth.name)]
                     self.logger.critical(str(meth.name))
-                    self.logger.info(tmp_path)
                     self.search(tmp_path, meth, 0)
             self.logger.info("end of stream")
     

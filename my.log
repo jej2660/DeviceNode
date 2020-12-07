@@ -1,0 +1,123 @@
+
+
+---------Root Class-----------------
+Lcom/example/devicenode/MainActivity$1;
+<init>
+[0]INIT_END
+onNegativeClick
+[0]INSIDE: Landroid/util/Log;::d
+[1]EXTERNAL OR API
+onPositiveClick
+[0]INSIDE: Landroid/util/Log;::d
+[1]EXTERNAL OR API
+
+
+---------Root Class-----------------
+Lcom/example/devicenode/MainActivity;
+<init>
+[0]INIT_END
+onCreate
+[0]INSIDE: Lcom/example/devicenode/Agreement;::<init>
+[1]INIT_END
+[0]INSIDE: Lcom/example/devicenode/Agreement;::setCanceledOnTouchOutside
+[1]EXTERNAL OR API
+[0]INSIDE: Lcom/example/devicenode/MainActivity;::findViewById
+[1]EXTERNAL OR API
+[0]INSIDE: Lcom/example/devicenode/Agreement;::getWindow
+[1]EXTERNAL OR API
+[0]INSIDE: Landroid/view/Window;::setLayout
+[1]EXTERNAL OR API
+[0]INSIDE: Lcom/example/devicenode/Agreement;::show
+[1]EXTERNAL OR API
+Loop!
+[0]INSIDE: Lcom/example/devicenode/PermissionCheck;::grantPer
+[1]INSIDE: Lcom/gun0912/tedpermission/TedPermission$Builder;::setPermissions
+[2]EXTERNAL OR API
+[1]INSIDE: Lcom/gun0912/tedpermission/TedPermission;::with
+[2]INSIDE: Lcom/gun0912/tedpermission/TedPermission$Builder;::<init>
+[3]INIT_END
+[1]INSIDE: Lcom/gun0912/tedpermission/TedPermission$Builder;::check
+[2]INSIDE: Lcom/gun0912/tedpermission/TedPermission$Builder;::checkPermissions
+[3]EXTERNAL OR API
+[1]INSIDE: Lcom/gun0912/tedpermission/TedPermission$Builder;::setDeniedMessage
+[2]EXTERNAL OR API
+[1]INSIDE: Lcom/gun0912/tedpermission/TedPermission$Builder;::setRationaleMessage
+[2]EXTERNAL OR API
+[1]INSIDE: Lcom/gun0912/tedpermission/TedPermission$Builder;::setPermissionListener
+[2]EXTERNAL OR API
+[0]INSIDE: Lcom/example/devicenode/MainActivity$1;::<init>
+[1]INIT_END
+[0]INSIDE: Lcom/example/devicenode/MainActivity;::setContentView
+[1]EXTERNAL OR API
+[0]INSIDE: Lcom/example/devicenode/Agreement;::setCancelable
+[1]EXTERNAL OR API
+onCreateClick
+[0]INSIDE: Landroid/content/Intent;::putExtra
+[1]EXTERNAL OR API
+[0]INSIDE: Landroid/content/Intent;::<init>
+[1]EXTERNAL OR API
+[0]INSIDE: Landroid/util/Log;::d
+[1]EXTERNAL OR API
+[0]INSIDE: Landroid/widget/EditText;::getText
+[1]EXTERNAL OR API
+---Find!---
+
+
+------New Activity Found!-----
+
+Lcom/example/devicenode/DeviceService;
+
+
+---------Root Class-----------------
+Lcom/example/devicenode/DeviceService;
+<init>
+[0]INIT_END
+onBind
+onCreate
+[0]INSIDE: Landroid/util/Log;::d
+[1]EXTERNAL OR API
+Loop!
+onDestroy
+[0]INSIDE: Landroid/util/Log;::d
+[1]EXTERNAL OR API
+[0]INSIDE: Lcom/example/devicenode/DeviceThread;::stopForever
+Loop!
+onStartCommand
+[0]INSIDE: Lcom/example/devicenode/DeviceService;::getPackageManager
+[1]EXTERNAL OR API
+[0]INSIDE: Landroid/util/Log;::d
+[1]EXTERNAL OR API
+[0]INSIDE: Landroid/content/Intent;::getStringExtra
+[1]EXTERNAL OR API
+[0]INSIDE: Lcom/example/devicenode/DeviceThread;::<init>
+[1]INIT_END
+[0]INSIDE: Lcom/example/devicenode/DeviceThread;::start
+[1]EXTERNAL OR API
+Loop!
+getPackageManager
+[0]EXTERNAL OR API
+[0]INSIDE: Lcom/example/devicenode/MainActivity;::startService
+[1]EXTERNAL OR API
+[0]INSIDE: Lcom/example/devicenode/MainActivity;::getApplicationContext
+[1]EXTERNAL OR API
+[0]INSIDE: Ljava/lang/Object;::toString
+[1]EXTERNAL OR API
+onDesClick
+[0]INSIDE: Landroid/util/Log;::d
+[1]EXTERNAL OR API
+[0]INSIDE: Lcom/example/devicenode/MainActivity;::stopService
+[1]EXTERNAL OR API
+[0]INSIDE: Landroid/content/Intent;::<init>
+[1]EXTERNAL OR API
+[0]INSIDE: Lcom/example/devicenode/MainActivity;::getApplicationContext
+[1]EXTERNAL OR API
+setContentView
+[0]EXTERNAL OR API
+findViewById
+[0]EXTERNAL OR API
+getApplicationContext
+[0]EXTERNAL OR API
+startService
+[0]EXTERNAL OR API
+stopService
+[0]EXTERNAL OR API
