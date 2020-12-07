@@ -17,40 +17,41 @@ from apkanalyzer import Apkanlyzer
 
 class TableMaker:
     def __init__(self):
-        apkanalyzer=Apkanlyzer()
-        self.a=apkanalyzer.a
-        self.dx=apkanalyzer.dx
-        self.dvm=DalvikVMFormat(self.a.get_dex())
-        self.mainActivity=apkanalyzer.getMainActivity()
         self.flow_tbl={}
-        self.get_mainactivity_method()
-    # get_xref_to 한 결과를 '클래스네임::메소드네임' 형식으로 flow_tbl의 key와 value에 저장
-    # <init>이 아니면 add_flow 
-    def add_flow(self, key_class, key_method):
-        key = key_class + "::" + key_method
-        self.flow_tbl[key]=[]
-        for meth in self.method_to_methodAnalysis(key_class, key_method).get_xref_to():
-            value = meth[0].name + "::" + meth[1].name
-            self.flow_tbl[key].append(value)
-            if(meth[1].name != "<init>"):
-                self.add_flow(meth[0].name, meth[1].name)
-                
-    # EncodedMethod를 MethodClassAnalysis로 attribute 변환
-    def method_to_methodAnalysis(self, class_name, method_name):
-        methods=[]
-        for method in self.dx.find_methods(classname=class_name, methodname=method_name):
-            methods.append(method)
-        return methods[0]
 
-    """
-    메인 액티비티 클래스 이름 자바 형식으로 변환
-    find classes로 메인 액티비티 str에서 ClassAnalysis 타입으로 변환 
-    i.get_methods로 메인액티비티 내의 메소드 MethodClassAnalysis 타입으로 return
-    i = ClassAnalysis
-    j = MethodClassAnalysis
-    """
-    def get_mainactivity_method(self):
-        self.main=FormatClassToJava(self.mainActivity)
-        for i in self.dx.find_classes(self.main):
-            for j in i.get_methods():
-                self.add_flow(self.main, j.name)
+    def getLogger(self):
+        __log = logging.getLogger("TraceFlow")
+        __log.setLevel(logging.DEBUG)
+        stream_hander = logging.StreamHandler()
+        stream_hander.setLevel(logging.DEBUG)
+        __log.addHandler(stream_hander)
+        file_handler = logging.FileHandler('my.log')
+        file_handler.setLevel(logging.CRITICAL)
+        __log.addHandler(file_handler)
+        self.logger = __log
+        return __log
+
+    def make_tbl(self, dx):
+        for p_method in dx.get_methods():
+            key=self.extract_class_name(str(p_method.get_class_name()))+"::"+str(p_method.name)
+            if p_method.is_android_api():
+                continue
+            if (len(p_method.get_xref_to())>0):
+                self.flow_tbl[key]=[]
+                for c_method in p_method.get_xref_to():
+                    value=self.extract_class_name(str(c_method[0].name))+"::"+str(c_method[1].name)
+                    self.flow_tbl[key].append(value)
+        with open('flow_tbl.json', 'w') as f:
+            json.dump(self.flow_tbl,f)   
+        f.close()
+        self.logger.critical("Make flow_tbl Finished")
+
+    def extract_class_name(self, dir_class):
+        tmp=dir_class.split('/')
+        class_name = tmp.pop()
+        return class_name
+
+    def string_xref_from(self, dx, string):
+        for string in dx.find_strings(string):
+            for meth in string.get_xref_from():
+                self.logger.critical(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
