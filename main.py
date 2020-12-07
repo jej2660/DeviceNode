@@ -12,11 +12,11 @@ if __name__ == '__main__':    # 프로그램의 시작점일 때만 아래 코�
     apk_hash = hashlib.sha256(a.get_raw())
 
     with open("hash.txt", "a+") as f:
+        f.seek(0)
         lines=f.readlines()
-        for line in lines:
-            if(line==apk_hash):
-                print("already exist")
-                sys.exit()
+        if(apk_hash.hexdigest()+"\n" in lines):
+            print("already exist")
+            sys.exit()
         f.write(apk_hash.hexdigest()+"\n") 
 
     
