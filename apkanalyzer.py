@@ -47,22 +47,25 @@ class Apkanlyzer:
         self.manifest["permission"]=self.permission  # permissions
         #self.logger.logging("get permissions")
         
-        self.receiv_list = self.a.get_receivers()    
+        self.receiv_list = self.a.get_receivers()  
+        self.manifest["receiver"]={}  
         for receiver in self.receiv_list:
             receiver_intent = self.a.get_intent_filters("receiver", receiver)
-            self.manifest["receiver"]={receiver:receiver_intent}
+            self.manifest["receiver"][receiver]=receiver_intent
         #self.logger.logging("get receiver")
         
         self.serv_list = self.a.get_services()
+        self.manifest["service"]={}
         for service in self.serv_list:      # service, intent-filter
             service_intent = self.a.get_intent_filters("service", service)
-            self.manifest["service"]={service:service_intent}
+            self.manifest["service"][service]=service_intent
         #self.logger.logging("get service")
         
         self.activ_list = self.a.get_activities()
+        manifest["activity"]={}
         for activity in self.activ_list:          # activity, intent-filter
             activity_intent = self.a.get_intent_filters("activity", activity)
-            self.manifest["activity"]={activity:activity_intent}
+            self.manifest["activity"][activity]=activity_intent
         #self.logger.logging("get activity")
         
         self.asign = self.a.get_signatures()
