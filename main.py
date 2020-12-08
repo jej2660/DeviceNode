@@ -6,7 +6,7 @@ import utils
 
 
 
-if __name__ == '__main__':    # 프로그램의 시작점일 때만 아래 코드 실행
+if __name__ == '__debug__':    # 프로그램의 시작점일 때만 아래 코드 실행
     apk_file=sys.argv[1]
     a,_,__=AnalyzeAPK(apk_file)
     apk_hash = hashlib.sha256(a.get_raw())
@@ -32,3 +32,10 @@ if __name__ == '__main__':    # 프로그램의 시작점일 때만 아래 코�
     tf.getLogger()
     tf.traceMethod(pingju.dx,"L"+pingju.getMainActivity(),None) 
     tf.logger.critical("Final:"+toString(tf.Log_list))
+
+
+if __name__ == '__main__':
+    apk=Apkanlyzer("../DeviceNode.apk")#분석 앱 경로
+    apk.loadAPK(False)
+    apk.getManifest()
+    apk.get_json()
