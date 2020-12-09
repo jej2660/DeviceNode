@@ -27,6 +27,8 @@ class TraceFlow:
         self.getLogger()
         self.dx = dx
         self.activitychangelist =[]
+        self.bindList = []
+        self.servicelist = []
 
     def getLogger(self):
         __log = logging.getLogger("TraceFlow")
@@ -76,6 +78,8 @@ class TraceFlow:
             self.logger.critical("["+str(dept)+"]"+"INSIDE: " + str(meth[0].name) + "::" + str(meth[1].name))
             self.logger.info("Full path" + toString(tmp_path))
             self.search(tmp_path, meth[1], dept+1)
+
+#path = [main::oncreat, Strat:start, Start::startActivity, Deviceser::onCreate, ]
     def searching(self, method, path, depth):
         #####
         #종결조건
@@ -86,29 +90,59 @@ class TraceFlow:
         if(method.name == "<init>"):
             self.logger.critical("["+str(depth)+"]"+"INIT_END")
             return
-        #####
+        ###########
+#deviceser::oncreate -> servec()
         for meth in method.get_xref_to():
-            if (meth in self.find_list):
+            if (meth[1].name in self.find_list):
                 path.append(self.extract_class_name(str(meth[0].name) + "::" + str(meth[1].name)))
+                #path = [main::oncreat, Strat:start, Start::startActivity]
                 self.logger.critical("Find transition ---> " + (self.extract_class_name(str(meth[0].name) + "::" + str(meth[1].name))))
                 self.nextProcessing(method, meth[1], path)
-
+#Close::close()
+#Start::start() -> startActivity()
+#path = [main::oncreat, Strat:start, Start::startActivity, Deviceser]
+        
+        for meth in method.get_xref_to():
+            tmp_path = path
+            if meth.name in self.find_list:
+                continue
+            if method.name == meth[1].name:
+                self.logger.critical("Loop!")
+                continue
+            tmp_path.append(self.extract_class_name(str(meth[0].name) + "::" + str(meth[1].name)))
+            #tmp_path = [main::oncreat, Strat:start]
+            self.logger.critical("["+ depth + "]" +" Current Pos:" + toString(tmp_path))
+            self.searching(meth[1],tmp_path,depth+1)
+            
+    
     def nextProcessing(self, caller, method, path):
         ##각 함수 이름에 따른 엑티비티 처리
-        methodname = str(method[1].name)
+        methodname = str(method.name)
         if (methodname in ["startActivity", "startActivityForResult"]):#엑티비티 전환
             self.logger.critical("\n----Activity Transition Occur!!----\n")
             nextclass = self.activityAnalysis(caller)
             if (nextclass == None):
                 self.logger.critical("error occur At nextProcessing()")
-            #self.extract_class_name(str(method[0].name)) + "::" + str(caller.name) -> nextclass::onCreate()   -->self.activitychangelist
+            path.append(self.extract_class_name(nextclass))
+            #self.activitychangelist.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
+            self.activitychangelist.append(path)
             self.traceChange(nextclass, path)
-        elif (methodname in [])#바인더 어떤콜있는지 적어넣기
-                
-
-                
-            
-        
+        elif (methodname in ["bindService"]):#바인더 어떤콜있는지 적어넣기
+            self.logger.critical("\n----Binding Occur!!----\n")
+            nextclass = self.activityAnalysis(caller)
+            if (nextclass == None):
+                self.logger.critical("error occur At nextProcessing()")
+            self.bindList.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
+            self.traceChange(nextclass, path)
+        elif (methodname in ["startService", "stopService"]):
+            self.logger.critical("\n----Binding Occur!!----\n")
+            nextclass = self.activityAnalysis(caller)
+            if (nextclass == None):
+                self.logger.critical("error occur At nextProcessing()")
+            self.servicelist.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
+            self.traceChange(nextclass, path)
+        #쓰레드 + 소켓 부분 추가
+#path = [main::oncreat, Strat:start, Start::startActivity, Deviceser::onCreate, ]
     def traceChange(self, startPoint, path):
         classlist = dx.find_classes("^"+FormatClassToJava(startPoint)+"$")
         for cls in classlist:
@@ -116,11 +150,11 @@ class TraceFlow:
             fmethod = dx.find_methods(cls.name,"^onCreate$")
             for me in fmethod:
                 self.logger.critical("--------Root---------------")
-                self.logger.critical(self.extract_class_name(cls.name)+"::"+me.name)
+                self.logger.critical(self.extract_class_name(str(cls.name))+"::"+str(me.name))
                 if(me.name == "onCreate"):
-                    tmp_act_path.append(self.extract_class_name(cls.name)+"::"+me.name)
-                    self.searching( tmp_act_path,me,0)
-
+                    tmp_act_path.append(self.extract_class_name(str(cls.name))+"::"+str(me.name))#mainactivi::oncreate
+                    self.searching(me,tmp_act_path,0)
+                
 
     def extract_class_name(self, dir_class):
         tmp=dir_class.split('/')
