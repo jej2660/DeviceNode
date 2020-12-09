@@ -31,20 +31,32 @@ class TableMaker:
         self.logger = __log
         return __log
 
-    def make_tbl(self, dx):
+    def xref_tbl(self, dx):
+        self.flow_tbl["xref"]={}
         for p_method in dx.get_methods():
             key=self.extract_class_name(str(p_method.get_class_name()))+"::"+str(p_method.name)
             if p_method.is_android_api():
                 continue
             if (len(p_method.get_xref_to())>0):
-                self.flow_tbl[key]=[]
+                self.flow_tbl["xref"][key]=[]
                 for c_method in p_method.get_xref_to():
                     value=self.extract_class_name(str(c_method[0].name))+"::"+str(c_method[1].name)
-                    self.flow_tbl[key].append(value)
+                    self.flow_tbl["xref"][key].append(value)
         with open('flow_tbl.json', 'w') as f:
             json.dump(self.flow_tbl,f)   
         f.close()
-        self.logger.critical("Make flow_tbl Finished")
+        self.logger.critical("Make XREF tbl Finished")
+
+    def class_methods_tbl(self, dx):
+        self.flow_tbl["class-methods"]={}
+        for c in dx.get_classes():
+            if c.is_external() or c.is_android_api():
+                continue
+            key_class=self.extract_class_name(str(c.name))
+            for method in c.get_methods():
+                value_method=[]
+                value_method.append(str(method.name))
+                self.flow_tbl["class-methods"][key_class]=value_method
 
     def extract_class_name(self, dir_class):
         tmp=dir_class.split('/')
