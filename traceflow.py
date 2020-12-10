@@ -43,47 +43,10 @@ class TraceFlow:
         self.logger = __log
         return __log
 
-    def search(self, path, method,dept):
-        #종결 조건
-        if(method.is_external() or method.is_android_api()):
-            self.logger.critical("["+str(dept)+"]"+"EXTERNAL OR API")
-            return
-
-        if(method.name == "<init>"):
-            self.logger.critical("["+str(dept)+"]"+"INIT_END")
-            return
-        #if(method.name == "isPrimaryNavigation" or method.name == "getFragmentFactory" or method.name == "setFragmentFactory"):
-        #    return
-        for meth in method.get_xref_to():
-            tmp_path = path
-            tmp_path.append(str(self.extract_class_name(meth[0].name)) + "::" + str(meth[1].name))
-            if(meth[1].name in self.find_list):#너비 우선 탐색으로 변경
-                self.logger.critical("---Find!---")
-                connect_activity = self.methodAnalysis(method)
-                if connect_activity == None:
-                    return
-
-                path.append(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
-                self.Log_list.append(path)
-                self.logger.critical("\n\n------New Activity Found!-----\n\n"+connect_activity)
-                for cls in self.dx.find_classes(connect_activity):
-                    self.logger.critical("\n\n---------Root Class-----------------\n"+str(cls.name))
-                    for methd in dx.find_methods(cls.name,"^onCreate$"):
-                        if(methd.name == "onCreate"):
-                            self.logger.critical(str(methd.name))
-                            path.append(self.extract_class_name(str(cls.name))+'::'+str(methd.name))
-                            self.search(tmp_path, methd, 0)
-            if method.name == meth[1].name:
-                self.logger.critical("Loop!")
-                continue
-            self.logger.critical("["+str(dept)+"]"+"INSIDE: " + str(meth[0].name) + "::" + str(meth[1].name))
-            self.logger.info("Full path" + toString(tmp_path))
-            self.search(tmp_path, meth[1], dept+1)
 
 #path = [main::oncreat, Strat:start, Start::startActivity, Deviceser::onCreate, ]
     def searching(self, method, path, depth):
         #####
-        #종결조건
         if(method.is_external() or method.is_android_api()):
             self.logger.critical("["+str(depth)+"]"+"EXTERNAL OR API")
             return
@@ -117,9 +80,8 @@ class TraceFlow:
             
     
     def nextProcessing(self, caller, method, path):
-        ##각 함수 이름에 따른 엑티비티 처리
         methodname = str(method.name)
-        if (methodname in ["startActivity", "startActivityForResult"]):#엑티비티 전환
+        if (methodname in ["startActivity", "startActivityForResult"]):
             self.logger.critical("\n----Activity Transition Occur!!----\n")
             nextclass = self.activityAnalysis(caller)
             if (nextclass == None):
@@ -128,7 +90,7 @@ class TraceFlow:
             #self.activitychangelist.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
             self.activitychangelist.append(path)
             self.traceChange(nextclass, path)
-        elif (methodname in ["bindService"]):#바인더 어떤콜있는지 적어넣기
+        elif (methodname in ["bindService"]):
             self.logger.critical("\n----Binding Occur!!----\n")
             nextclass = self.activityAnalysis(caller)
             if (nextclass == None):
@@ -146,7 +108,6 @@ class TraceFlow:
             #self.servicelist.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
             self.servicelist.append(path)
             self.traceChange(nextclass, path)
-        #쓰레드 + 소켓 부분 추가
 #path = [main::oncreat, Strat:start, Start::startActivity, Deviceser::onCreate, ]
     def traceChange(self, startPoint, path):
         classlist = self.dx.find_classes("^"+FormatClassToJava(startPoint)+"$")
@@ -193,7 +154,4 @@ class TraceFlow:
         with open(self.apk_hash+'/trainstion.json', 'w') as f:
             json.dump(output,f) 
 
-            
-                    
-#내일 할일 startActivity를 찾았을 때 어떤 class로 던지는지를 찾아야함 ㅇㅇ이거 가능하나 ? ㅋㅋㅋ
             

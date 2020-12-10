@@ -1,0 +1,82 @@
+--------Root---------------
+MainActivity;::<init>
+[0]INIT_END
+--------Root---------------
+MainActivity;::onCreate
+[0] Current Pos:MainActivity;::onCreate->Agreement;::<init>Agreement;::<init>->
+[1]INIT_END
+[0] Current Pos:MainActivity;::onCreate->Agreement;::setCancelableAgreement;::setCancelable->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onCreate->Window;::setLayoutWindow;::setLayout->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onCreate->Agreement;::showAgreement;::show->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onCreate->MainActivity;::setContentViewMainActivity;::setContentView->
+[1]EXTERNAL OR API
+Loop!
+[0] Current Pos:MainActivity;::onCreate->PermissionCheck;::grantPerPermissionCheck;::grantPer->
+[1] Current Pos:MainActivity;::onCreate->PermissionCheck;::grantPer->TedPermission$Builder;::setPermissionsTedPermission$Builder;::setPermissions->
+[2]EXTERNAL OR API
+[1] Current Pos:MainActivity;::onCreate->PermissionCheck;::grantPer->TedPermission;::withTedPermission;::with->
+[2] Current Pos:MainActivity;::onCreate->PermissionCheck;::grantPer->TedPermission;::with->TedPermission$Builder;::<init>TedPermission$Builder;::<init>->
+[3]INIT_END
+[1] Current Pos:MainActivity;::onCreate->PermissionCheck;::grantPer->TedPermission$Builder;::setDeniedMessageTedPermission$Builder;::setDeniedMessage->
+[2]EXTERNAL OR API
+[1] Current Pos:MainActivity;::onCreate->PermissionCheck;::grantPer->TedPermission$Builder;::checkTedPermission$Builder;::check->
+[2] Current Pos:MainActivity;::onCreate->PermissionCheck;::grantPer->TedPermission$Builder;::check->TedPermission$Builder;::checkPermissionsTedPermission$Builder;::checkPermissions->
+[3]EXTERNAL OR API
+[1] Current Pos:MainActivity;::onCreate->PermissionCheck;::grantPer->TedPermission$Builder;::setPermissionListenerTedPermission$Builder;::setPermissionListener->
+[2]EXTERNAL OR API
+[1] Current Pos:MainActivity;::onCreate->PermissionCheck;::grantPer->TedPermission$Builder;::setRationaleMessageTedPermission$Builder;::setRationaleMessage->
+[2]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onCreate->MainActivity;::findViewByIdMainActivity;::findViewById->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onCreate->Agreement;::setCanceledOnTouchOutsideAgreement;::setCanceledOnTouchOutside->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onCreate->Agreement;::getWindowAgreement;::getWindow->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onCreate->MainActivity$1;::<init>MainActivity$1;::<init>->
+[1]INIT_END
+--------Root---------------
+MainActivity;::onCreateClick
+Find transition ---> MainActivity;::startService
+
+----Binding Occur!!----
+
+[0] Current Pos:MainActivity;::onCreateClick->MainActivity;::startService->DeviceService;->Object;::toStringObject;::toString->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onCreateClick->MainActivity;::startService->DeviceService;->EditText;::getTextEditText;::getText->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onCreateClick->MainActivity;::startService->DeviceService;->Intent;::putExtraIntent;::putExtra->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onCreateClick->MainActivity;::startService->DeviceService;->MainActivity;::getApplicationContextMainActivity;::getApplicationContext->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onCreateClick->MainActivity;::startService->DeviceService;->Log;::dLog;::d->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onCreateClick->MainActivity;::startService->DeviceService;->Intent;::<init>Intent;::<init>->
+[1]EXTERNAL OR API
+--------Root---------------
+MainActivity;::onDesClick
+[0] Current Pos:MainActivity;::onDesClick->Log;::dLog;::d->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onDesClick->Intent;::<init>Intent;::<init>->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onDesClick->MainActivity;::getApplicationContextMainActivity;::getApplicationContext->
+[1]EXTERNAL OR API
+[0] Current Pos:MainActivity;::onDesClick->MainActivity;::stopServiceMainActivity;::stopService->
+[1]EXTERNAL OR API
+--------Root---------------
+MainActivity;::setContentView
+[0]EXTERNAL OR API
+--------Root---------------
+MainActivity;::findViewById
+[0]EXTERNAL OR API
+--------Root---------------
+MainActivity;::getApplicationContext
+[0]EXTERNAL OR API
+--------Root---------------
+MainActivity;::startService
+[0]EXTERNAL OR API
+--------Root---------------
+MainActivity;::stopService
+[0]EXTERNAL OR API

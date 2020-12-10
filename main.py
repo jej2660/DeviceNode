@@ -46,9 +46,11 @@ if __name__ == '__main__':
     flow=TableMaker(apk_hashpath)
     flow.class_methods_tbl(apk.dx)
     flow.method_xref(apk.dx) 
+    flow.get_json()
 
     main = apk.getMainActivity()
     tf = TraceFlow(apk.dx, apk_hashpath)
     tf.traceChange(main, [])
     tf.getChangeList()
+    tf.get_json()
 
