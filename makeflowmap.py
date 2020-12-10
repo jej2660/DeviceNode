@@ -92,8 +92,8 @@ class TableMaker:
         mainactivity="^"+FormatClassToJava(mainactivity)+"$"
         findClass =dx.find_classes(mainactivity)
         listfindClass = list(findClass)
-        if len(listfindClass):
+        if (len(listfindClass)==0):
+            self.logger.critical("APK IS OBFUSCATED")
             return True
         else:
-            self.logger.critical("APK IS OBFUSCATED")
             return False
