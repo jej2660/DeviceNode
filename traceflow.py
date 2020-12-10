@@ -20,8 +20,9 @@ from collections import OrderedDict
 
 
 class TraceFlow:
-    def __init__(self,dx):
-        self.find_list = ["startActivity","startService"]
+    def __init__(self,dx,apk_hash):
+        self.apk_hash = apk_hash
+        self.find_list = ["startActivity","startService","startActivityForResult","bindService"]
         self.act_change = []
         self.Log_list = []
         self.getLogger()
@@ -36,9 +37,9 @@ class TraceFlow:
         stream_hander = logging.StreamHandler()
         stream_hander.setLevel(logging.DEBUG)
         __log.addHandler(stream_hander)
-        #file_handler = logging.FileHandler('my.log')
-        #file_handler.setLevel(logging.CRITICAL)
-        #__log.addHandler(file_handler)
+        file_handler = logging.FileHandler('my.log')
+        file_handler.setLevel(logging.CRITICAL)
+        __log.addHandler(file_handler)
         self.logger = __log
         return __log
 
@@ -103,15 +104,15 @@ class TraceFlow:
 #path = [main::oncreat, Strat:start, Start::startActivity, Deviceser]
         
         for meth in method.get_xref_to():
-            tmp_path = path
-            if meth.name in self.find_list:
+            tmp_path = path.copy()
+            if meth[1].name in self.find_list:
                 continue
-            if method.name == meth[1].name:
+            if str(method.name) == str(meth[1].name):
                 self.logger.critical("Loop!")
                 continue
             tmp_path.append(self.extract_class_name(str(meth[0].name) + "::" + str(meth[1].name)))
             #tmp_path = [main::oncreat, Strat:start]
-            self.logger.critical("["+ depth + "]" +" Current Pos:" + toString(tmp_path))
+            self.logger.critical("["+ str(depth) + "]" +" Current Pos:" + toString(tmp_path))
             self.searching(meth[1],tmp_path,depth+1)
             
     
@@ -123,7 +124,7 @@ class TraceFlow:
             nextclass = self.activityAnalysis(caller)
             if (nextclass == None):
                 self.logger.critical("error occur At nextProcessing()")
-            path.append(self.extract_class_name(nextclass))
+            path.append(self.extract_class_name(str(nextclass)))
             #self.activitychangelist.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
             self.activitychangelist.append(path)
             self.traceChange(nextclass, path)
@@ -132,28 +133,32 @@ class TraceFlow:
             nextclass = self.activityAnalysis(caller)
             if (nextclass == None):
                 self.logger.critical("error occur At nextProcessing()")
-            self.bindList.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
+            path.append(self.extract_class_name(str(nextclass)))
+            #self.bindList.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
+            self.bindList.append(path)
             self.traceChange(nextclass, path)
-        elif (methodname in ["startService", "stopService"]):
+        elif (methodname in ["startService"]):
             self.logger.critical("\n----Binding Occur!!----\n")
             nextclass = self.activityAnalysis(caller)
             if (nextclass == None):
                 self.logger.critical("error occur At nextProcessing()")
-            self.servicelist.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
+            path.append(self.extract_class_name(str(nextclass)))
+            #self.servicelist.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
+            self.servicelist.append(path)
             self.traceChange(nextclass, path)
         #쓰레드 + 소켓 부분 추가
 #path = [main::oncreat, Strat:start, Start::startActivity, Deviceser::onCreate, ]
     def traceChange(self, startPoint, path):
-        classlist = dx.find_classes("^"+FormatClassToJava(startPoint)+"$")
+        classlist = self.dx.find_classes("^"+FormatClassToJava(startPoint)+"$")
         for cls in classlist:
-            tmp_act_path = path
-            fmethod = dx.find_methods(cls.name,"^onCreate$")
-            for me in fmethod:
+            #fmethod = dx.find_methods(cls.name,"^onCreate$")#oncreate만 생각하지 말자
+            for me in cls.get_methods():
+                tmp_act_path = path.copy()
                 self.logger.critical("--------Root---------------")
                 self.logger.critical(self.extract_class_name(str(cls.name))+"::"+str(me.name))
-                if(me.name == "onCreate"):
-                    tmp_act_path.append(self.extract_class_name(str(cls.name))+"::"+str(me.name))#mainactivi::oncreate
-                    self.searching(me,tmp_act_path,0)
+                #if(me.name == "onCreate"):
+                tmp_act_path.append(self.extract_class_name(str(cls.name))+"::"+str(me.name))#mainactivi::oncreate
+                self.searching(me,tmp_act_path,0)
                 
 
     def extract_class_name(self, dir_class):
@@ -173,8 +178,22 @@ class TraceFlow:
 
         match=regex.search(test_str)
         return FormatClassToJava(match.group(1).lstrip())
+
+    def getChangeList(self):
+        print(self.activitychangelist)
+        print(self.servicelist)
+        print(self.bindList)
+    
+    def get_json(self):
+        output = {}
+        output["activitychangelist"] = self.activitychangelist
+        output["bindList"] = self.bindList
+        output["servicelist"] = self.servicelist
+
+        with open(self.apk_hash+'/trainstion.json', 'w') as f:
+            json.dump(output,f) 
+
             
                     
 #내일 할일 startActivity를 찾았을 때 어떤 class로 던지는지를 찾아야함 ㅇㅇ이거 가능하나 ? ㅋㅋㅋ
-            
             

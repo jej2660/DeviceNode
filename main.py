@@ -36,14 +36,19 @@ if __name__ == '__debug__':    # 프로그램의 시작점일 때만 아래 코�
 
 
 if __name__ == '__main__':
-    apk=Apkanlyzer("../DeviceNode.apk")#분석 앱 경로
+    apk_name = sys.argv[1]
+    apk_hashpath = sys.argv[2]
+    apk = Apkanlyzer(apk_name, apk_hashpath)
     apk.loadAPK(False)
     apk.getManifest()
     apk.get_json()
 
-    flow=TableMaker()
+    flow=TableMaker(apk_hashpath)
     flow.class_methods_tbl(apk.dx)
-    flow.method_xref(apk.dx)
-    with open('flow_tbl.json', 'w') as f:
-        json.dump(flow.flow_tbl,f)   
+    flow.method_xref(apk.dx) 
+
+    main = apk.getMainActivity()
+    tf = TraceFlow(apk.dx, apk_hashpath)
+    tf.traceChange(main, [])
+    tf.getChangeList()
 

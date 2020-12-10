@@ -16,10 +16,11 @@ from apkanalyzer import Apkanlyzer
 # entrypoint class를 전달받고 이를 통해 언오더드맵을 사용하여 테이블을 제작
 
 class TableMaker:
-    def __init__(self):
+    def __init__(self, apk_hash):
         self.flow_tbl={}
         self.domain_tbl={}
         self.getLogger()
+        self.apk_hash = apk_hash
 
     def getLogger(self):
         __log = logging.getLogger("TableMaker")
