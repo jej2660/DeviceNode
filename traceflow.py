@@ -152,6 +152,6 @@ class TraceFlow:
         output["servicelist"] = self.servicelist
 
         with open(self.apk_hash+'/trainstion.json', 'w') as f:
-            json.dump(output,f) 
+            json.dump(output,f, indent=4) 
 
             

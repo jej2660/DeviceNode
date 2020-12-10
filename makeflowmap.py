@@ -97,3 +97,6 @@ class TableMaker:
             return True
         else:
             return False
+    def get_json(self):
+        with open(self.apk_hash+'/flow_tbl.json', 'w') as f:
+            json.dump(self.flow_tbl,f, indent=4) 
