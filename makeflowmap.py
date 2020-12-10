@@ -18,6 +18,7 @@ from apkanalyzer import Apkanlyzer
 class TableMaker:
     def __init__(self):
         self.flow_tbl={}
+        self.domain_tbl={}
         self.getLogger()
 
     def getLogger(self):
@@ -60,56 +61,38 @@ class TableMaker:
                 self.flow_tbl["class-methods"][key_class]=value_method
         self.logger.critical("-----CLASS_METHODS TBL FINISH-----")
 
-    """
-    def make_xref_root(self, dx,mainactivity):
-        root=self.extract_class_name(mainactivity)
-        main_activity="^"+FormatClassToJava(mainactivity)+"$"
-        for cls in dx.find_classes(main_activity):
-            self.xref_tbl[root]=[]
-            tmp=[]
-            for meth in cls.get_methods():
-                self.xref_tbl[root].append(str(meth.name))
-                tmp.append(meth)
-                #self.make_xref_node(dx,meth)
-            for m in tmp:
-                self.make_xref_node(dx,m)
-
-    def make_xref_node(self, dx, method):
-        key=self.extract_class_name(str(method.get_class_name()))+"::"+str(method.name)
-        tmp=[]
-        if self.check_method(method):
-            self.xref_tbl[key]=[]
-            for meth in method.get_xref_to():
-                value=self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name)
-                self.xref_tbl[key].append(value)
-                tmp.append(meth[1])
-                #self.make_xref_node(dx,meth[1])
-            for m in tmp:
-                self.make_xref_node(dx,m)
-        
-    def check_method(self, method):
-        if method.name in self.xref_tbl.keys():
-            #self.logger.critical("already exist in xref_tbl keys")
-            return False
-        if method.is_external():
-            #self.logger.critical("External")
-            return False
-        if method.is_android_api():
-            #self.logger.critical("Android API")
-            return False
-        if(str(method.name) == "<init>"):
-            #self.logger.critical("method name == <init>")
-            return False
-        else: 
-            return True
-    """
-
     def extract_class_name(self, dir_class):
         tmp=dir_class.split('/')
         class_name = tmp.pop()
         return class_name
 
-    def string_xref_from(self, dx, string):
-        for string in dx.find_strings(string):
-            for meth in string.get_xref_from():
-                self.logger.critical(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
+    def domain_xref_from(self,dx):
+        for domain in dx.find_strings(r"([a-zA-Z0-9-_]+[$\.]){1,}(com$|net$|org$|biz$|into$|asia$|jobs$|mobi$|tel$|travel$|xxx$)"):
+            key_domain=str(domain.get_value())
+            print(str(domain.get_value())+" => xref from")
+            tmp_ls=[]
+            for meth in domain.get_xref_from():
+                tmp_ls.append(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
+                print(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
+            self.domain_tbl[key_domain]=tmp_ls
+            print("=====end====")
+
+        for domain in dx.find_strings(r"([a-zA-Z0-9-_]+[$\.]){1,}((co$)?|(go)?|(ac)?|(ne)?|(nm)?|(or)?|(re)?)(kr$|jp$|cn$|in$|mx$|us$|de$|tv$|me$)"):
+            key_domain=str(domain.get_value())
+            print(str(domain.get_value())+" => xref from")
+            tmp_ls=[]
+            for meth in domain.get_xref_from():
+                tmp_ls.append(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
+                print(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
+            self.domain_tbl[key_domain]=tmp_ls
+            print("=====end====")
+
+    def is_obfuscated(self, dx, mainactivity):
+        mainactivity="^"+FormatClassToJava(mainactivity)+"$"
+        findClass =dx.find_classes(mainactivity)
+        listfindClass = list(findClass)
+        if len(listfindClass):
+            return True
+        else:
+            self.logger.critical("APK IS OBFUSCATED")
+            return False
