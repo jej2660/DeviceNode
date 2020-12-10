@@ -16,9 +16,10 @@ from apkanalyzer import Apkanlyzer
 # entrypoint class를 전달받고 이를 통해 언오더드맵을 사용하여 테이블을 제작
 
 class TableMaker:
-    def __init__(self):
+    def __init__(self, apk_hash):
         self.flow_tbl={}
         self.getLogger()
+        self.apk_hash = apk_hash
 
     def getLogger(self):
         __log = logging.getLogger("TableMaker")
@@ -103,7 +104,9 @@ class TableMaker:
         else: 
             return True
     """
-
+    def get_json(self):
+        with open(self.apk_hash + '/flow_tbl.json', 'w') as f:
+            json.dump(self.flow_tbl,f)
     def extract_class_name(self, dir_class):
         tmp=dir_class.split('/')
         class_name = tmp.pop()
