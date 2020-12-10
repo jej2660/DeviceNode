@@ -62,7 +62,7 @@ class Apkanlyzer:
         #self.logger.logging("get service")
         
         self.activ_list = self.a.get_activities()
-        manifest["activity"]={}
+        self.manifest["activity"]={}
         for activity in self.activ_list:          # activity, intent-filter
             activity_intent = self.a.get_intent_filters("activity", activity)
             self.manifest["activity"][activity]=activity_intent

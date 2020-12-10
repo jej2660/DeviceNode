@@ -2,6 +2,7 @@ import hashlib
 import sys
 from apkanalyzer import *
 from traceflow import *
+from makeflowmap import *
 import utils
 
 
@@ -39,3 +40,10 @@ if __name__ == '__main__':
     apk.loadAPK(False)
     apk.getManifest()
     apk.get_json()
+
+    flow=TableMaker()
+    flow.class_methods_tbl(apk.dx)
+    flow.method_xref(apk.dx)
+    with open('flow_tbl.json', 'w') as f:
+        json.dump(flow.flow_tbl,f)   
+
