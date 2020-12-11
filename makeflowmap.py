@@ -65,6 +65,7 @@ class TableMaker:
     def extract_class_name(self, dir_class):
         tmp=dir_class.split('/')
         class_name = tmp.pop()
+        class_name =class_name.replace(";","")
         return class_name
 
     def domain_xref_from(self,dx):
@@ -87,7 +88,6 @@ class TableMaker:
                 print(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
             self.domain_tbl[key_domain]=tmp_ls
             print("=====end====")
-        self.flow_tbl["domain_tbl"]=self.domain_tbl
 
     def is_obfuscated(self, dx, mainactivity):
         mainactivity="^"+FormatClassToJava(mainactivity)+"$"
@@ -98,7 +98,6 @@ class TableMaker:
             return True
         else:
             return False
-
     def get_json(self):
         with open(self.apk_hash+'/flow_tbl.json', 'w') as f:
             json.dump(self.flow_tbl,f, indent=4) 
