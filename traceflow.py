@@ -38,7 +38,7 @@ class TraceFlow:
         stream_hander = logging.StreamHandler()
         stream_hander.setLevel(logging.DEBUG)
         __log.addHandler(stream_hander)
-        file_handler = logging.FileHandler('my.log')
+        file_handler = logging.FileHandler(self.apk_hash+'/my.log')
         file_handler.setLevel(logging.CRITICAL)
         __log.addHandler(file_handler)
         self.logger = __log
