@@ -22,7 +22,7 @@ from collections import OrderedDict
 class TraceFlow:
     def __init__(self,dx,apk_hash):
         self.apk_hash = apk_hash
-        self.find_list = ["startActivity","startService","startActivityForResult","bindService"]
+        self.find_list = ["startActivity","startService","startActivityForResult","bindService","stopService","run"]
         self.act_change = []
         self.Log_list = []
         self.getLogger()
@@ -30,6 +30,7 @@ class TraceFlow:
         self.activitychangelist =[]
         self.bindList = []
         self.servicelist = []
+        self.threadlist = []
 
     def getLogger(self):
         __log = logging.getLogger("TraceFlow")
@@ -44,9 +45,7 @@ class TraceFlow:
         return __log
 
 
-#path = [main::oncreat, Strat:start, Start::startActivity, Deviceser::onCreate, ]
     def searching(self, method, path, depth):
-        #####
         if(method.is_external() or method.is_android_api()):
             self.logger.critical("["+str(depth)+"]"+"EXTERNAL OR API")
             return
@@ -54,17 +53,13 @@ class TraceFlow:
         if(method.name == "<init>"):
             self.logger.critical("["+str(depth)+"]"+"INIT_END")
             return
-        ###########
-#deviceser::oncreate -> servec()
         for meth in method.get_xref_to():
             if (meth[1].name in self.find_list):
                 path.append(self.extract_class_name(str(meth[0].name) + "::" + str(meth[1].name)))
-                #path = [main::oncreat, Strat:start, Start::startActivity]
+
                 self.logger.critical("Find transition ---> " + (self.extract_class_name(str(meth[0].name) + "::" + str(meth[1].name))))
                 self.nextProcessing(method, meth[1], path)
-#Close::close()
-#Start::start() -> startActivity()
-#path = [main::oncreat, Strat:start, Start::startActivity, Deviceser]
+
         
         for meth in method.get_xref_to():
             tmp_path = path.copy()
@@ -74,7 +69,6 @@ class TraceFlow:
                 self.logger.critical("Loop!")
                 continue
             tmp_path.append(self.extract_class_name(str(meth[0].name) + "::" + str(meth[1].name)))
-            #tmp_path = [main::oncreat, Strat:start]
             self.logger.critical("["+ str(depth) + "]" +" Current Pos:" + toString(tmp_path))
             self.searching(meth[1],tmp_path,depth+1)
             
@@ -88,7 +82,6 @@ class TraceFlow:
                 self.logger.critical("error occur At nextProcessing()")
             class_name = self.extract_class_name(str(nextclass)) + "::" + "onCreate"
             path.append(class_name)
-            #self.activitychangelist.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
             self.activitychangelist.append(path)
             self.traceChange(nextclass, path)
         elif (methodname in ["bindService"]):
@@ -98,7 +91,6 @@ class TraceFlow:
                 self.logger.critical("error occur At nextProcessing()")
             class_name = self.extract_class_name(str(nextclass)) + "::" + "onBind"
             path.append(class_name)
-            #self.bindList.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
             self.bindList.append(path)
             self.traceChange(nextclass, path)
         elif (methodname in ["startService", "stopService"]):
@@ -106,31 +98,37 @@ class TraceFlow:
             nextclass = self.activityAnalysis(caller)
             if (nextclass == None):
                 self.logger.critical("error occur At nextProcessing()")
-            class_name = self.extract_class_name(str(nextclass)) + "::" + "onCreate"
-            path.append(class_name)
-            class_name = self.extract_class_name(str(nextclass)) + "::" + "onStartCommand"
-            path.append(class_name)
-            #self.servicelist.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
+            if(methodname == "startService"):
+                class_name = self.extract_class_name(str(nextclass)) + "::" + "onCreate"
+                path.append(class_name)
+                class_name = self.extract_class_name(str(nextclass)) + "::" + "onStartCommand"
+                path.append(class_name)
+            if(methodname == "stopService"):
+                class_name = self.extract_class_name(str(nextclass)) + "::" + "onDestroy"
+                path.append(class_name)
             self.servicelist.append(path)
             self.traceChange(nextclass, path)
-#path = [main::oncreat, Strat:start, Start::startActivity, Deviceser::onCreate, ]
+        elif (methodname in ["run"]):
+            self.logger.critical("\n--------Thread Occur!!------\n")
+            path.append(self.extract_class_name(str(method.get_class_name())) + "::" + "run")
+            self.threadlist.append(path) 
+
+
     def traceChange(self, startPoint, path):
         classlist = self.dx.find_classes("^"+FormatClassToJava(startPoint)+"$")
         for cls in classlist:
-            #fmethod = dx.find_methods(cls.name,"^onCreate$")#oncreate만 생각하지 말자
             for me in cls.get_methods():
                 tmp_act_path = path.copy()
                 self.logger.critical("--------Root---------------")
                 self.logger.critical(self.extract_class_name(str(cls.name))+"::"+str(me.name))
-                #if(me.name == "onCreate"):
-                tmp_act_path.append(self.extract_class_name(str(cls.name))+"::"+str(me.name))#mainactivi::oncreate
+                tmp_act_path.append(self.extract_class_name(str(cls.name))+"::"+str(me.name))
                 self.searching(me,tmp_act_path,0)
                 
 
     def extract_class_name(self, dir_class):
         tmp=dir_class.split('/')
         class_name = tmp.pop()
-        class_name = class_name[:-1]
+        class_name = class_name.replace(";","")
         return class_name
 
     def activityAnalysis(self, meth):
@@ -156,6 +154,7 @@ class TraceFlow:
         output["activitychangelist"] = self.activitychangelist
         output["bindList"] = self.bindList
         output["servicelist"] = self.servicelist
+        ouput["threadlist"] = self.threadlist
 
         with open(self.apk_hash+'/trainstion.json', 'w') as f:
             json.dump(output,f, indent=4) 

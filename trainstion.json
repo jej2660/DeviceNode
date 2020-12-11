@@ -1,1 +1,17 @@
-{"activitychangelist": [], "bindList": [], "servicelist": [["MainActivity;::onCreateClick", "MainActivity;::startService", "DeviceService;"]]}
+{
+    "activitychangelist": [],
+    "bindList": [],
+    "servicelist": [
+        [
+            "MainActivity::onCreateClick",
+            "MainActivity::startService",
+            "DeviceService::onCreate",
+            "DeviceService::onStartCommand"
+        ],
+        [
+            "MainActivity::onDesClick",
+            "MainActivity::stopService",
+            "DeviceService::onDestroy"
+        ]
+    ]
+}
