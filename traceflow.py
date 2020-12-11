@@ -86,7 +86,8 @@ class TraceFlow:
             nextclass = self.activityAnalysis(caller)
             if (nextclass == None):
                 self.logger.critical("error occur At nextProcessing()")
-            path.append(self.extract_class_name(str(nextclass)))
+            class_name = self.extract_class_name(str(nextclass)) + "::" + "onCreate"
+            path.append(class_name)
             #self.activitychangelist.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
             self.activitychangelist.append(path)
             self.traceChange(nextclass, path)
@@ -95,16 +96,20 @@ class TraceFlow:
             nextclass = self.activityAnalysis(caller)
             if (nextclass == None):
                 self.logger.critical("error occur At nextProcessing()")
-            path.append(self.extract_class_name(str(nextclass)))
+            class_name = self.extract_class_name(str(nextclass)) + "::" + "onBind"
+            path.append(class_name)
             #self.bindList.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
             self.bindList.append(path)
             self.traceChange(nextclass, path)
-        elif (methodname in ["startService"]):
+        elif (methodname in ["startService", "stopService"]):
             self.logger.critical("\n----Binding Occur!!----\n")
             nextclass = self.activityAnalysis(caller)
             if (nextclass == None):
                 self.logger.critical("error occur At nextProcessing()")
-            path.append(self.extract_class_name(str(nextclass)))
+            class_name = self.extract_class_name(str(nextclass)) + "::" + "onCreate"
+            path.append(class_name)
+            class_name = self.extract_class_name(str(nextclass)) + "::" + "onStartCommand"
+            path.append(class_name)
             #self.servicelist.append(self.extract_class_name(str(caller.get_class_name())) + "::" + str(caller.name) + "->" + self.extract_class_name(str(method.get_class_name())) + "::" + str(method.name) + "->" + nextclass + "::onCreate")
             self.servicelist.append(path)
             self.traceChange(nextclass, path)
@@ -125,6 +130,7 @@ class TraceFlow:
     def extract_class_name(self, dir_class):
         tmp=dir_class.split('/')
         class_name = tmp.pop()
+        class_name = class_name[:-1]
         return class_name
 
     def activityAnalysis(self, meth):
