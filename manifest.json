@@ -1,16 +1,74 @@
 {
     "permission": [
-        "android.permission.ACCESS_NETWORK_STATE",
-        "android.permission.INTERNET",
         "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE"
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_CALENDAR",
+        "android.permission.FOREGROUND_SERVICE",
+        "com.google.android.c2dm.permission.RECEIVE",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.WAKE_LOCK",
+        "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE",
+        "android.permission.VIBRATE"
     ],
-    "receiver": {},
+    "receiver": {
+        "pl.mb.calendar.CalendarWidget": {
+            "action": [
+                "android.appwidget.action.APPWIDGET_UPDATE",
+                "android.appwidget.action.APPWIDGET_ENABLED",
+                "android.appwidget.action.APPWIDGET_DISABLED"
+            ]
+        },
+        "pl.mb.calendar.CalendarWidgetMini": {
+            "action": [
+                "android.appwidget.action.APPWIDGET_UPDATE",
+                "android.appwidget.action.APPWIDGET_ENABLED",
+                "android.appwidget.action.APPWIDGET_DISABLED"
+            ]
+        },
+        "pl.mb.calendar.CalendarWidgetMicro": {
+            "action": [
+                "android.appwidget.action.APPWIDGET_UPDATE",
+                "android.appwidget.action.APPWIDGET_ENABLED",
+                "android.appwidget.action.APPWIDGET_DISABLED"
+            ]
+        },
+        "pl.mb.calendar.AlarmReciver": {},
+        "pl.mb.calendar.WidgetReciver": {},
+        "pl.mb.calendar.BootReceiver": {
+            "action": [
+                "android.intent.action.BOOT_COMPLETED"
+            ]
+        },
+        "com.google.android.gms.measurement.AppMeasurementReceiver": {},
+        "com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver": {
+            "action": [
+                "com.android.vending.INSTALL_REFERRER"
+            ]
+        },
+        "com.google.firebase.iid.FirebaseInstanceIdReceiver": {
+            "action": [
+                "com.google.android.c2dm.intent.RECEIVE"
+            ]
+        }
+    },
     "service": {
-        "com.example.devicenode.DeviceService": {}
+        "pl.mb.calendar.AlarmExecutor": {},
+        "pl.mb.calendar.CalendarWidget$CalendarService": {},
+        "pl.mb.calendar.CalendarWidgetMini$CalendarService": {},
+        "pl.mb.calendar.CalendarWidgetMicro$CalendarService": {},
+        "com.google.firebase.components.ComponentDiscoveryService": {},
+        "com.google.android.gms.measurement.AppMeasurementService": {},
+        "com.google.android.gms.measurement.AppMeasurementJobService": {},
+        "com.google.firebase.iid.FirebaseInstanceIdService": {
+            "action": [
+                "com.google.firebase.INSTANCE_ID_EVENT"
+            ]
+        }
     },
     "activity": {
-        "com.example.devicenode.MainActivity": {
+        "pl.mb.calendar.FullActivity": {
             "action": [
                 "android.intent.action.MAIN"
             ],
@@ -18,9 +76,31 @@
                 "android.intent.category.LAUNCHER"
             ]
         },
-        "com.gun0912.tedpermission.TedPermissionActivity": {}
+        "pl.mb.calendar.CalendarActivity": {},
+        "pl.mb.calendar.WyborActivity": {
+            "action": [
+                "android.appwidget.action.APPWIDGET_CONFIGURE"
+            ]
+        },
+        "pl.mb.calendar.WyborActivityMini": {
+            "action": [
+                "android.appwidget.action.APPWIDGET_CONFIGURE"
+            ]
+        },
+        "pl.mb.calendar.WyborActivityMicro": {
+            "action": [
+                "android.appwidget.action.APPWIDGET_CONFIGURE"
+            ]
+        },
+        "pl.mb.calendar.KalendariumActivity": {},
+        "pl.mb.calendar.WyborKoloryP": {},
+        "pl.mb.calendar.ImieninyActivity": {},
+        "pl.mb.calendar.ImieninyDniActivity": {},
+        "com.google.android.gms.ads.AdActivity": {},
+        "pl.mb.calendar.UserDataActivity": {},
+        "com.google.android.gms.common.api.GoogleApiActivity": {}
     },
     "apk sign": [
-        "0\u0082\u0005\u0017\u0006\t*\u0086H\u0086\u00f7\r\u0001\u0007\u0002\u00a0\u0082\u0005\b0\u0082\u0005\u0004\u0002\u0001\u00011\u000f0\r\u0006\t`\u0086H\u0001e\u0003\u0004\u0002\u0001\u0005\u00000\u000b\u0006\t*\u0086H\u0086\u00f7\r\u0001\u0007\u0001\u00a0\u0082\u0003Q0\u0082\u0003M0\u0082\u00025\u00a0\u0003\u0002\u0001\u0002\u0002\u0004K\u0090\u00a550\r\u0006\t*\u0086H\u0086\u00f7\r\u0001\u0001\u000b\u0005\u00000W1\u000b0\t\u0006\u0003U\u0004\u0006\u0013\u0002821\u000e0\f\u0006\u0003U\u0004\b\u0013\u0005seoul1\u000e0\f\u0006\u0003U\u0004\u0007\u0013\u0005seoul1\f0\n\u0006\u0003U\u0004\n\u0013\u0003bob1\f0\n\u0006\u0003U\u0004\u000b\u0013\u0003bob1\f0\n\u0006\u0003U\u0004\u0003\u0013\u0003jae0\u001e\u0017\r201117194914Z\u0017\r451111194914Z0W1\u000b0\t\u0006\u0003U\u0004\u0006\u0013\u0002821\u000e0\f\u0006\u0003U\u0004\b\u0013\u0005seoul1\u000e0\f\u0006\u0003U\u0004\u0007\u0013\u0005seoul1\f0\n\u0006\u0003U\u0004\n\u0013\u0003bob1\f0\n\u0006\u0003U\u0004\u000b\u0013\u0003bob1\f0\n\u0006\u0003U\u0004\u0003\u0013\u0003jae0\u0082\u0001\"0\r\u0006\t*\u0086H\u0086\u00f7\r\u0001\u0001\u0001\u0005\u0000\u0003\u0082\u0001\u000f\u00000\u0082\u0001\n\u0002\u0082\u0001\u0001\u0000\u00bd\u00a8\u0014\u00b9g\u00d2\u0002\u0004C\" X\u00c6iZ\u00b4\u0004u\u0093.\u00d9\u00c8\u00fc\u00b1\u00b7\u001e\u0090\u008b\u008b!w\u0000!\u00c8\u00f2`f\u00a3\u00f0:0Qk\u0088\f\u0097\u00b9|\u008e\u0094+\u001c\u00a4\u00fe\u00c2&\u00a9\u0099\u00fb?\u00f7x\u0092%,\u008aA\u00f5lf=\u00db\u00c5\u00c8\u000fa\u0015\u001bW4\u0088\u0090oZK]i\u0001\u0091\u00a53'?<\u0080\u008bQ\u00cd\u0002j,#\u00af&\u00d4\u00c4\u00ae\u0091\u0017\u00ab\u009c\u0086e\u0011\u0087\u00a6\u0015\u00d9\u0000\u0016\u00cd\u00de\u00c9\u00b9\u00a2\u00bf\u00b5\u00feJ\u00fb\u00ce\u00cf\u00cc\u00b5\u00d3\u00ae\u008d\u00cb\u00b5'\u0098!\u0084&\u009au\u0011\u00c5d*\u00c9k0\u00c2\u0090\u00a4\u009c7\u00a5E\u008aZP_\u009f\u0019\u00fb\u0084\u00b9&\u00e5\b\u0010\u0014\u0017\u00a7r\u0019 \u0084Q\u00a6K\u001d{\u000e\u0093\u0089_\u00a2w\u008c\u0096\r\u0004o\u00b4\u00f0P?E\u00e6\u008bS\u0000V\u0097\u00b0\u00f6'\u00c4\u007f\u00b2\"\u00f5\u00effk\u001f\u000b\u0089\n\u00d9]\u00b7\u00e9\u0081\u0091\u00ee\u00fd\u00ee\u00a3L\u00dc\u0003\u00de\u00be\u0017z3Z\u00c4\u00b3\u00a2\u0011\u00fc'\u00d1.\u00ee\u00bb \u00e8M\u009d\u00cf\u0002\u0003\u0001\u0000\u0001\u00a3!0\u001f0\u001d\u0006\u0003U\u001d\u000e\u0004\u0016\u0004\u0014Rz\u001apG7\u00db\f\u00f3\u00f5\u0085\u0013\u0000Fd\u00cf\u0099N]&0\r\u0006\t*\u0086H\u0086\u00f7\r\u0001\u0001\u000b\u0005\u0000\u0003\u0082\u0001\u0001\u0000\u00800\u00bd\u0004\u00d5\u00cb\u00a3>\u0095\u00fe\u0096R\u00de\u00a3)\u0002J6\u00db\u009e\u00a8N\u00e2\u0081\u00b5\u0005&\u00f1\u007fz\u00c8DQ\u0002\u0014\u001f\u0012\u0019\u00e8\u00b4\u0089\u0007\u0002\u0007k\u0000\t\u00b6\u0090r\u00c4\u00ef\u0015|2\u0016\u0083.\u0090L\u009d\u0014\u00a5\u00e6?KQ\u00d6\f\u00b6\u00c1x\u00b0\u00b3\u008e\u00bc\u00d4\u00a7\r\u001a\u0004\u00ae>l\u0002\u00ee_EY\u00a2\u00b7I\u00ac\u00fb\u00d5\u00e6\r\u00e4\"3\u00b5/\u00936\u0018\u00c6\u00e5R$\u009b+\u009b\u00e3\u00c5\u00f7\u007fR\u00d2\u0099!\u0001p\u00bcO\u00f7\u0096\u000e\u0083\u00f8\u009bn\u0006oJ\u00ac\u00ac\u00df\u00b2D%bZ\u00a1\u00b4\u0099\u0006\u00e4\u0005\r\u00dd\u00cc\u008a\u001d\u00de\u00bdK\u00b3q3\u00a8\u00c8\u00e1h\u00bf\u00b7H\u00a8\u00a3*#\u00e9\u00ce\u00c1_M\u0083u\u00f8\u008dn\u000bF\u00b4%\u00f9\u0092\u00adI\u00e6>\u00d5\u00be\u0018\u0090-\u00f3'\f\u0001\u00a94\u00d6\u0084\u0090\u00a2\u0004iuk@\u009b\u007fX\u00a9\u00c7\u0019\"rW\f;:\u00cc\u0085\u001f\u00f09\u00aev]\u0002\u00f6\u00a8s\u00fb\u00df\u0088\u00f1\u008a\"%\u00e0\u0084\u00cd\u00f7!\u00a4\u00fd(\u00a9.\u001c\u00ddz\u00df\u00a91\u0082\u0001\u008a0\u0082\u0001\u0086\u0002\u0001\u00010_0W1\u000b0\t\u0006\u0003U\u0004\u0006\u0013\u0002821\u000e0\f\u0006\u0003U\u0004\b\u0013\u0005seoul1\u000e0\f\u0006\u0003U\u0004\u0007\u0013\u0005seoul1\f0\n\u0006\u0003U\u0004\n\u0013\u0003bob1\f0\n\u0006\u0003U\u0004\u000b\u0013\u0003bob1\f0\n\u0006\u0003U\u0004\u0003\u0013\u0003jae\u0002\u0004K\u0090\u00a550\r\u0006\t`\u0086H\u0001e\u0003\u0004\u0002\u0001\u0005\u00000\r\u0006\t*\u0086H\u0086\u00f7\r\u0001\u0001\u0001\u0005\u0000\u0004\u0082\u0001\u0000\u00aa\u00e53:_G\u00c0d\u00ac\u0003\u00aei\u00f1\u0084\u009a\u00f8K;\u00e7M\u00f1\u0007\u00f6G3\u00c1\u00e4)e\u00886\u00e6^\u00bbA\u00d8=E1\u0011\u00f4kbu\u00f7\u007f\u0001\u00c8S\u00f5\u001a\u00ec*\u00e4\u00cb\u009d\u00e6\u00bd\u00f3W\u009a\u0015\u008e\u00f3Io\u00f3\u0004\u0015\u00ea\u00b7ztP\u0086\u00d4\u00c2i\u0084\t\u0012\u00ac\u00a4d\u0089z\u00b2\u0082\u0000Y\u00db\t.x\u00cb\u00d5\u00c4@\u008c\u00fd.+\u00ed\u00f3\u0088\u00b2\u00ffu\u00e8\"\u00de\u001fg,\f\u00ad(\u00b8\u009a\u00f1\u00d7\"\u007f\u00e0\n\u00b0\u00c5\u00d5\u0099q\u00a6\u0017\u00ea\u00ef\u00d1U\u00dc%\u00dc\u0090M\u00a4\t\u0016m\u00b2\u00a47>\u00ea}B\u0085\u00c4%\u009a%\u008fA\u0013\u00c5\u001c\u00bf\u00a6\u009a.\u00bd\u00fc\u00ef\u0007,UYI8\u0014\u001a\u0090\u00a7\u00ce7\u00e8\u00b9F\u00a8\u00c1\u0085\u0006\u0007h\u00b1\u00a06\r\u0082\u0096\u0006up\u0004\u000e\u00ea\u00ce,\u00dcPy\u0006\u009d\u001b\u00d6\u00e3\u0098\u0087\u0017\u0011Z :\u00e0\u00e7f\u00f7\u00a7 \u00ba#W&\u00cc\u0097D\u0001Tq\u00caf\u00bdC\u00bcK>\u00d6\u009b\u0085\u00c93\u00d0c\u0090\u008c\u00cf\u0096B\u00d7\u00f7"
+        "0\u0082\u0002\u00ee\u0006\t*\u0086H\u0086\u00f7\r\u0001\u0007\u0002\u00a0\u0082\u0002\u00df0\u0082\u0002\u00db\u0002\u0001\u00011\u000b0\t\u0006\u0005+\u000e\u0003\u0002\u001a\u0005\u00000\u000b\u0006\t*\u0086H\u0086\u00f7\r\u0001\u0007\u0001\u00a0\u0082\u0001\u00db0\u0082\u0001\u00d70\u0082\u0001@\u00a0\u0003\u0002\u0001\u0002\u0002\u0004O\u009a*\u00f60\r\u0006\t*\u0086H\u0086\u00f7\r\u0001\u0001\u0005\u0005\u00000/1\u000b0\t\u0006\u0003U\u0004\u0006\u0013\u0002pl1\u00130\u0011\u0006\u0003U\u0004\n\u0013\nMB4ANDROID1\u000b0\t\u0006\u0003U\u0004\u0003\u0013\u0002MB0 \u0017\r120427051326Z\u0018\u000f20620415051326Z0/1\u000b0\t\u0006\u0003U\u0004\u0006\u0013\u0002pl1\u00130\u0011\u0006\u0003U\u0004\n\u0013\nMB4ANDROID1\u000b0\t\u0006\u0003U\u0004\u0003\u0013\u0002MB0\u0081\u009f0\r\u0006\t*\u0086H\u0086\u00f7\r\u0001\u0001\u0001\u0005\u0000\u0003\u0081\u008d\u00000\u0081\u0089\u0002\u0081\u0081\u0000\u0082\u00a1\u00bc<;)\u001dU\u001a\u0082\u0092>Y\u00ac\u00ec]\u00ac\u009ej0\u001a\u00aeg\u008eW\u0000\u00d9\u00f8Yvw!4-\u0095\u00f2\u0014o\u00f6\u00c3\u00a0\u00e5\u00ed\u0010?\u00a96\u00e9\u00bbj$7y\u00f7\u00ae&\u00b85\b$\u009a\u000f\u00f2jU\u00d2\u00a9'\u00e2\u0082Rv\u00ee\\\u00e4]G\u00c9\u00a9W\u000f\u00a1G?\u00a8\u00e5\u0012\u0090\u00abA\u00a3\u0099\u00bd\u0084S\u0016\u00cb\u00fb#\u000fz\u0092\u0007s-\u00a5\u00c9\b\u00eb\u0083\u00ed\u001d\u00cd\u00b5R\u009bxCD\u0019\u00a6\u00d5\u00c1\u00ed\u00fa\u00ce\u0098\u0013\u0002\u0003\u0001\u0000\u00010\r\u0006\t*\u0086H\u0086\u00f7\r\u0001\u0001\u0005\u0005\u0000\u0003\u0081\u0081\u0000}\u0005\u0098\u00df\u00d2m\u0007=\u009f\u000e\u00d4\u00e3\u00c3&\u00f1\u00d1\u0097\u008b\u0014\u0006\b\u000fnf\u0018\u00a5\u00f3\u00e7\u00a2\u00a4v\u00b3\u00e0\"R\u0099\u00c9l\u00f9\"\u00c7\u00d4)\u00a5\u001419\u0089R!\u00e3\u00a6\u0089G\u0018pw\u00ec\u00eb\u0091\u00b8WN?2\u001c\u00ee[R\u00f9\u008f\u00b2\u00ba*\u00c3\u00a3u>#\u00d24\u00cdZ\u00c1\u00d7\u00c4\u0090\f_v\u00a6\u0089x\u00ac\u00a9\u00d0A\u00bf\u00cb\u001f\u00eek\u0090\u000b>\u00ac\u001eds\u0001W\u00f0:\u00df\u00a6\u00c1^@\u008a\u00b2%\u00f9\u00f9\u0095\u00c3\u008a>\u00ac1\u0081\u00dc0\u0081\u00d9\u0002\u0001\u0001070/1\u000b0\t\u0006\u0003U\u0004\u0006\u0013\u0002pl1\u00130\u0011\u0006\u0003U\u0004\n\u0013\nMB4ANDROID1\u000b0\t\u0006\u0003U\u0004\u0003\u0013\u0002MB\u0002\u0004O\u009a*\u00f60\t\u0006\u0005+\u000e\u0003\u0002\u001a\u0005\u00000\r\u0006\t*\u0086H\u0086\u00f7\r\u0001\u0001\u0001\u0005\u0000\u0004\u0081\u008088\u001a\u0006\u00f7\u0095\u00c1\u00c9=\u00ef\u0007\u00fe\u00f4\u0018\u00b6\u00ca\u00cc\u001b\u0082\u00bc.]F8\u0013\u001b\u00a8\u00ebk1\u0013\u0019\u00d9`\u00ce\u0085\u00a6Z\u00bfr\u00a9W(g\u00cd\u00f5\u009d\u00fc\u00ef\u0093\u00b5z\u001c\u00b7C4\u0091\u00ba\fc6\u00d0\u0088\u0003\u00da\u0082\u0001`\u00a48\u00b3\u00e4o\u0091G\u007f[\u00d7\u00aan&\u00de~\u008f-\u001a\u00d5\u00bb4v\u001eL\u00b2\u00fa\u0005\u007f\u00b8\u00beD\u008d\u001d\u001a\u00ac\u00b5\u00de5\u00c4\u0099k\u00b4\u00a7\u00f2\u00ab\u00eae&'I#\u00f2\u001bD\u00f3\u00cf\u00fe\u0093\u0084\u00db"
     ]
 }

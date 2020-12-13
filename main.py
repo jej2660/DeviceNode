@@ -36,12 +36,15 @@ if __name__ == '__debug__':    # 프로그램의 시작점일 때만 아래 코�
 
 
 if __name__ == '__main__':
-    apk_name = sys.argv[1]
-    apk_hashpath = sys.argv[2]
+    #apk_name = sys.argv[1]
+    #apk_hashpath = sys.argv[2]
+    apk_name = "cal.apk"
+    apk_hashpath = "."
     apk = Apkanlyzer(apk_name, apk_hashpath)
     apk.loadAPK(False)
     apk.getManifest()
     apk.get_json()
+
 
     flow=TableMaker(apk_hashpath)
     flow.class_methods_tbl(apk.dx)
