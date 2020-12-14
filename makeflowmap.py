@@ -108,6 +108,8 @@ class TableMaker:
                 print(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
             self.domain_tbl[key_domain]=tmp_ls
             print("=====end====")        
+    
+        self.flow_tbl["domain_tbl"]=self.domain_tbl
 
 
     def is_obfuscated(self, dx, mainactivity):
