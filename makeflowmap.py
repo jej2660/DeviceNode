@@ -44,6 +44,8 @@ class TableMaker:
             if (len(p_method.get_xref_to())>0):
                 self.flow_tbl["xref"][key]=[]
                 for c_method in p_method.get_xref_to():
+                    if c_method.is_android_api() or c_method.is_external():
+                        continue
                     value=self.extract_class_name(str(c_method[0].name))+"::"+str(c_method[1].name)
                     self.flow_tbl["xref"][key].append(value)
         self.logger.critical("-----XREF TBL FINISH-----")
@@ -58,6 +60,8 @@ class TableMaker:
             key_class=self.extract_class_name(str(c.name))
             value_method=[]
             for method in c.get_methods():
+                if method.is_android_api() or method.is_external():
+                    continue
                 value_method.append(str(method.name))
                 self.flow_tbl["class-methods"][key_class]=value_method
         self.logger.critical("-----CLASS_METHODS TBL FINISH-----")
@@ -74,6 +78,8 @@ class TableMaker:
             print(str(domain.get_value())+" => xref from")
             tmp_ls=[]
             for meth in domain.get_xref_from():
+                if meth.is_android_api() or meth.is_external():
+                    continue
                 tmp_ls.append(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
                 print(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
             self.domain_tbl[key_domain]=tmp_ls
@@ -84,10 +90,25 @@ class TableMaker:
             print(str(domain.get_value())+" => xref from")
             tmp_ls=[]
             for meth in domain.get_xref_from():
+                if meth.is_android_api() or meth.is_external():
+                    continue
                 tmp_ls.append(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
                 print(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
             self.domain_tbl[key_domain]=tmp_ls
             print("=====end====")
+
+        for domain in dx.find_strings(r"^((http(s?))\:\/\/)(.*)"):
+            key_domain=str(domain.get_value())
+            print(str(domain.get_value())+" => xref from")
+            tmp_ls=[]
+            for meth in domain.get_xref_from():
+                if meth.is_android_api() or meth.is_external():
+                    continue
+                tmp_ls.append(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
+                print(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
+            self.domain_tbl[key_domain]=tmp_ls
+            print("=====end====")        
+
 
     def is_obfuscated(self, dx, mainactivity):
         mainactivity="^"+FormatClassToJava(mainactivity)+"$"
@@ -98,6 +119,7 @@ class TableMaker:
             return True
         else:
             return False
+
     def get_json(self):
         with open(self.apk_hash+'/flow_tbl.json', 'w') as f:
             json.dump(self.flow_tbl,f, indent=4) 
