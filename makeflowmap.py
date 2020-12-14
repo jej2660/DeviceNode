@@ -97,6 +97,19 @@ class TableMaker:
             self.domain_tbl[key_domain]=tmp_ls
             print("=====end====")
 
+        for domain in dx.find_strings(r"^((http(s?))\:\/\/)(.*)"):
+            key_domain=str(domain.get_value())
+            print(str(domain.get_value())+" => xref from")
+            tmp_ls=[]
+            for meth in domain.get_xref_from():
+                if meth.is_android_api() or meth.is_external():
+                    continue
+                tmp_ls.append(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
+                print(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
+            self.domain_tbl[key_domain]=tmp_ls
+            print("=====end====")        
+
+
     def is_obfuscated(self, dx, mainactivity):
         mainactivity="^"+FormatClassToJava(mainactivity)+"$"
         findClass =dx.find_classes(mainactivity)
