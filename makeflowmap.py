@@ -38,13 +38,13 @@ class TableMaker:
         self.flow_tbl["xref"]={}
         self.logger.critical("-----XREF TBL START-----")
         for p_method in dx.get_methods():
-            key=self.extract_class_name(str(p_method.get_class_name()))+"::"+str(p_method.name)
             if p_method.is_android_api():
                 continue
+            key=self.extract_class_name(str(p_method.get_class_name()))+"::"+str(p_method.name)            
             if (len(p_method.get_xref_to())>0):
                 self.flow_tbl["xref"][key]=[]
                 for c_method in p_method.get_xref_to():
-                    if c_method[1].is_android_api() or c_method[1].is_external():
+                    if c_method[1].is_android_api():
                         continue
                     value=self.extract_class_name(str(c_method[0].name))+"::"+str(c_method[1].name)
                     self.flow_tbl["xref"][key].append(value)
@@ -55,12 +55,12 @@ class TableMaker:
         self.flow_tbl["class-methods"]={}
         self.logger.critical("-----CLASS_METHODS TBL START-----")
         for c in dx.get_classes():
-            if c.is_external() or c.is_android_api():
+            if c.is_android_api():
                 continue
             key_class=self.extract_class_name(str(c.name))
             value_method=[]
             for method in c.get_methods():
-                if method.is_android_api() or method.is_external():
+                if method.is_android_api():
                     continue
                 value_method.append(str(method.name))
                 self.flow_tbl["class-methods"][key_class]=value_method
@@ -78,7 +78,7 @@ class TableMaker:
             print(str(domain.get_value())+" => xref from")
             tmp_ls=[]
             for meth in domain.get_xref_from():
-                if meth[1].is_android_api() or meth[1].is_external():
+                if meth[1].is_android_api():
                     continue
                 tmp_ls.append(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
                 print(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
@@ -90,7 +90,7 @@ class TableMaker:
             print(str(domain.get_value())+" => xref from")
             tmp_ls=[]
             for meth in domain.get_xref_from():
-                if meth[1].is_android_api() or meth[1].is_external():
+                if meth[1].is_android_api():
                     continue
                 tmp_ls.append(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
                 print(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
@@ -102,7 +102,7 @@ class TableMaker:
             print(str(domain.get_value())+" => xref from")
             tmp_ls=[]
             for meth in domain.get_xref_from():
-                if meth[1].is_android_api() or meth[1].is_external():
+                if meth[1].is_android_api():
                     continue
                 tmp_ls.append(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
                 print(self.extract_class_name(str(meth[0].name))+"::"+str(meth[1].name))
